@@ -6,23 +6,33 @@ import sys
 
 def readFile(fileName):
     firstLine = True
-    numBlocks = 0
-    namedList = []
-    heapList = []
+    pointerList = []
+    blockList = []
     for line in open(fileName):
         line = line.rstrip()
         if firstLine:
-            numBlocks = int(line)
+            for _ in range(int(line)):
+                blockList.append([])
             firstLine = False
         else:
             point, pointed = line.split(',')
             try:
-                #int(point)
-                heapList.append((int(point), int(pointed)))
+                blockList[int(pointed)].append(int(point))
             except ValueError:
-                namedList.append((point, int(pointed)))
-    return (numBlocks, namedList, heapList)
+                pointerList.append((point, int(pointed)))
+    return (pointerList, blockList)
+
+def markSweep(pList, bList):
+    markedNodes = []
+    for _ in range(len(bList)):
+        markedNodes.append(False)
+    #from pointers
+    for _, blockNum in pList:
+        markedNodes[blockNum] = True
+    
+
 
 fileName = sys.argv[1]
-numBlocks, namedList, heapList = readFile(fileName)
-print(numBlocks, namedList, heapList)
+pointerList, blockList = readFile(fileName)
+print(blockList)
+markSweep(pointerList, blockList)
