@@ -17,10 +17,16 @@ def readFile(fileName):
         else:
             point, pointed = line.split(',')
             try:
-                blockList[int(pointed)].append(int(point))
+                blockList[int(point)].append(int(pointed))
             except ValueError:
                 pointerList.append((point, int(pointed)))
     return (pointerList, blockList)
+
+def pointing(bList, blockNum, marked):
+    for block in bList[blockNum]:
+        if not marked[block]:
+            marked[block] = True
+            pointing(bList, block, marked)
 
 def markSweep(pList, bList):
     markedNodes = []
@@ -29,6 +35,9 @@ def markSweep(pList, bList):
     #from pointers
     for _, blockNum in pList:
         markedNodes[blockNum] = True
+        pointing(bList, blockNum, markedNodes)
+    print(markedNodes)
+
     
 
 
