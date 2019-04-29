@@ -4,6 +4,13 @@
 
 import sys
 
+#returns tuple of pointerList and blockList
+    #pointerList is a list of tuples
+        #(pointer, heapBlock)
+    #blockList is a list with lists that contain the blocks that the block points to
+        #the list will have as many list as there are heapBlocks
+        #each index of blockList represents that helpBlock number
+        #[[heapBlock, heapBlock], ...]
 def readFile(fileName):
     firstLine = True
     pointerList = []
@@ -16,32 +23,42 @@ def readFile(fileName):
             firstLine = False
         else:
             point, pointed = line.split(',')
+            #if ValueError occurs, that means that the line is a pointer to a block
             try:
                 blockList[int(point)].append(int(pointed))
             except ValueError:
                 pointerList.append((point, int(pointed)))
     return (pointerList, blockList)
 
+def finalOutput(markedList):
+    marked = 'Marked nodes: '
+    swept = 'Swept nodes: '
+    for block in range(len(markedList)):
+        if markedList[block]:
+            marked += str(block) + ' '
+        else:
+            swept += str(block) + ' '
+    print(marked)
+    print(swept)
+
+#Recursive function that goes through all the blocks a block points to
 def pointing(bList, blockNum, marked):
     for block in bList[blockNum]:
         if not marked[block]:
             marked[block] = True
             pointing(bList, block, marked)
 
+#Runs the markSweep algorithm
 def markSweep(pList, bList):
     markedNodes = []
     for _ in range(len(bList)):
         markedNodes.append(False)
-    #from pointers
     for _, blockNum in pList:
         markedNodes[blockNum] = True
         pointing(bList, blockNum, markedNodes)
-    print(markedNodes)
+    finalOutput(markedNodes)
 
-    
-
-
+#Driver code
 fileName = sys.argv[1]
 pointerList, blockList = readFile(fileName)
-print(blockList)
 markSweep(pointerList, blockList)
