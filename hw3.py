@@ -54,8 +54,9 @@ def markSweep(pList, bList):
     for _ in range(len(bList)):
         markedNodes.append(False)
     for _, blockNum in pList:
-        markedNodes[blockNum] = True
-        pointing(bList, blockNum, markedNodes)
+        if not markedNodes[blockNum]:
+            markedNodes[blockNum] = True
+            pointing(bList, blockNum, markedNodes)
     finalOutput(markedNodes)
 
 #Driver code
